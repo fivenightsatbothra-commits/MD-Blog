@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastering Asynchronous JavaScript: From Callbacks to Await - Markdown Blog</title>
+    <link href="/styles.css" rel="stylesheet">
+    <link href="/highlight.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            bg: #0b1120;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0b1120] text-slate-300 antialiased selection:bg-brand-accent selection:text-white overflow-x-hidden">
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div
+            class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-accent/20 rounded-full blur-[120px] mix-blend-screen opacity-30 animate-pulse">
+        </div>
+        <div
+            class="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-[120px] mix-blend-screen opacity-30">
+        </div>
+    </div>
+
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="absolute inset-0 bg-[#0b1120]/70 backdrop-blur-xl border-b border-white/5"></div>
+        <div class="max-w-screen-xl mx-auto px-6 h-20 flex items-center justify-between relative z-10">
+            <a href="/"
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-accent to-purple-400 hover:opacity-80 transition-opacity flex items-center gap-2">
+                <span class="w-2 h-8 bg-brand-accent rounded-full"></span>
+                MD Blog
+            </a>
+            <div class="hidden sm:flex gap-8 text-sm font-semibold tracking-wide items-center">
+                <a href="/" class="text-white hover:text-brand-accent transition-colors">Home</a>
+                <button onclick="toggleSearch()"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/30 text-slate-400 hover:text-white transition-all">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span>Search</span>
+                    <span class="text-xs border border-white/10 px-1.5 rounded bg-white/5">⌘K</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="min-h-screen pt-20 relative z-10 transition-all duration-300" id="main-content">
+        
+            <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+                <div class="fixed top-20 left-0 w-full h-1 bg-white/5 z-50">
+                    <div id="read-progress" class="h-full bg-brand-accent w-0"></div>
+                </div>
+
+                <header class="py-20 text-center max-w-4xl mx-auto">
+                    <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/20">#JavaScript</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/20">#Web</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/20">#Async</span><span class="px-3 py-1 text-xs font-semibold rounded-full bg-brand-accent/10 text-brand-accent border border-brand-accent/20">#Frontend</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-slate-500 mb-8 tracking-tight leading-[1.1]">Mastering Asynchronous JavaScript: From Callbacks to Await</h1>
+                     <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-slate-400 text-sm font-medium mb-10 backdrop-blur-sm">
+                        <span>3/12/2024</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                        <span>3 min read</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                        <span>Antigravity</span>
+                    </div>
+                    <div class="mb-12 rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-video relative group">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent opacity-60"></div>
+                <img src="https://images.unsplash.com/photo-1627398242454-45a1465c2479?q=80&w=2000&auto=format&fit=crop" alt="Mastering Asynchronous JavaScript: From Callbacks to Await" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+             </div>
+                    <p class="text-xl md:text-2xl text-slate-400 font-light leading-relaxed max-w-2xl mx-auto mb-10">A complete history and guide to handling concurrency in JavaScript. Understand the Event Loop, Promises, and the modern Async/Await patterns.</p>
+                </header>
+
+                <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative">
+                    <article class="prose prose-invert prose-lg md:prose-xl prose-slate max-w-none flex-1
+                        prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white
+                        prose-p:text-slate-400 prose-p:leading-relaxed
+                        prose-a:text-brand-accent prose-a:font-semibold prose-a:no-underline hover:prose-a:text-brand-accent/80 hover:prose-a:border-b hover:prose-a:border-brand-accent/50
+                        prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10
+                        prose-code:text-brand-accent prose-code:bg-brand-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                        prose-pre:bg-[#1e293b] prose-pre:border prose-pre:border-white/10 prose-pre:shadow-2xl prose-pre:rounded-2xl prose-pre:!p-0
+                        prose-blockquote:border-l-brand-accent prose-blockquote:bg-white/5 prose-blockquote:py-2 prose-blockquote:pl-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-200">
+                        <h1 id="-the-asynchronous-nature-of-the-web-">The Asynchronous Nature of the Web</h1><p>JavaScript is single-threaded. This means it has one call stack and one memory heap. Only one operation executes at a time. So, how does it handle millions of concurrent user interactions, API fetches, and animations without freezing the browser?</p>
+<p>The answer lies in the <strong>JavaScript Runtime Environment</strong> and the <strong>Event Loop</strong>.</p>
+<blockquote>[!NOTE]
+Understanding the Event Loop is the single most important concept for an advanced JavaScript developer.</blockquote><h2 id="-1-the-dark-ages-callback-hell-">1. The Dark Ages: Callback Hell</h2><p>In the early days, we handled asynchronous operations (like reading a file or making an HTTP request) using callbacks. A callback is simply a function passed into another function to be executed later.</p>
+<p>This worked, until it didn&#39;t.</p>
+<pre><code class="language-javascript">getData(function(a) {
+    getMoreData(a, function(b) {
+        getMoreData(b, function(c) {
+            getMoreData(c, function(d) {
+                getMoreData(d, function(e) {
+                    console.log(e);
+                });
+            });
+        });
+    });
+});
+</code></pre>
+<p>This structure, known as &quot;Callback Hell&quot; or the &quot;Pyramid of Doom,&quot; makes code unreadable, hard to debug, and difficult to error handle.</p>
+<h2 id="-2-the-enlightenment-promises-">2. The Enlightenment: Promises</h2><p>ES6 (ECMAScript 2015) introduced <strong>Promises</strong>. A Promise is an object representing the eventual completion or failure of an asynchronous operation.</p>
+<p>A Promise is in one of three states:</p>
+<ol>
+<li><strong>Pending</strong>: Initial state, neither fulfilled nor rejected.</li>
+<li><strong>Fulfilled</strong>: Meaning the operation completed successfully.</li>
+<li><strong>Rejected</strong>: Meaning the operation failed.</li>
+</ol>
+<pre><code class="language-javascript">const myPromise = new Promise((resolve, reject) =&gt; {
+    const success = true;
+    setTimeout(() =&gt; {
+        if(success) resolve(&quot;Operation Successful!&quot;);
+        else reject(&quot;Operation Failed.&quot;);
+    }, 1000);
+});
+
+myPromise
+    .then(data =&gt; console.log(data))
+    .catch(err =&gt; console.error(err));
+</code></pre>
+<p>Promises allowed us to chain operations, solving the nesting problem.</p>
+<pre><code class="language-javascript">getData()
+    .then(a =&gt; getMoreData(a))
+    .then(b =&gt; getMoreData(b))
+    .then(c =&gt; console.log(c))
+    .catch(err =&gt; console.error(err));
+</code></pre>
+<h2 id="-3-the-modern-era-async-await-">3. The Modern Era: Async / Await</h2><p>ES2017 brought us <code>async</code> and <code>await</code>, which are syntactic sugar built on top of Promises. They allow you to write asynchronous code that <em>looks</em> and <em>behaves</em> like synchronous code.</p>
+<h3 id="-the-syntax-">The Syntax</h3><pre><code class="language-javascript">async function fetchData() {
+    try {
+        const response = await fetch(&#39;https://api.example.com/data&#39;);
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error(&quot;Error:&quot;, error);
+    }
+}
+</code></pre>
+<p>This is readable. It reads top-to-bottom. We can use standard <code>try/catch</code> blocks for error handling, just like in synchronous code.</p>
+<blockquote>[!TIP]
+Remember, `await` pauses the execution of the `async` function until the Promise is resolved. It does **not** block the main thread; other events can still be handled.</blockquote><h2 id="-4-parallel-execution-with-promise-all-">4. Parallel Execution with Promise.all</h2><p>One common mistake with <code>await</code> is running independent tasks sequentially when they could be parallel.</p>
+<p><strong>Sequential (Slow):</strong></p>
+<pre><code class="language-javascript">const user = await fetchUser();   // Waits 1s
+const posts = await fetchPosts(); // Waits 1s
+// Total time: 2s
+</code></pre>
+<p><strong>Parallel (Fast):</strong></p>
+<pre><code class="language-javascript">const [user, posts] = await Promise.all([
+    fetchUser(),
+    fetchPosts()
+]);
+// Total time: 1s (if both take 1s)
+</code></pre>
+<h2 id="-5-real-world-example-a-retry-utility-">5. Real World Example: A Retry Utility</h2><p>Let&#39;s build a robust utility function using these concepts. A function that retries a failed operation a few times.</p>
+<pre><code class="language-javascript">async function retryOperation(fn, retries = 3, delay = 1000) {
+    for (let i = 0; i &lt; retries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            console.warn(`Attempt ${i + 1} failed. Retrying...`);
+            if (i === retries - 1) throw error;
+            await new Promise(r =&gt; setTimeout(r, delay));
+        }
+    }
+}
+
+// Usage
+await retryOperation(() =&gt; fetch(&#39;https://api.unstable.com/data&#39;));
+</code></pre>
+<h2 id="-conclusion-">Conclusion</h2><p>Async/Await is cleaner, but it&#39;s vital to remember it&#39;s just fancy Promises. The Event Loop is still spinning underneath. Mastering these patterns allows you to build performant, responsive web applications that feel fluid to the user.</p>
+
+                    </article>
+                     <aside class="hidden lg:block w-72 sticky top-32 h-fit">
+            <h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Table of Contents</h4>
+            <nav class="relative">
+                <div class="absolute left-0 top-0 bottom-0 w-px bg-white/10"></div>
+                <ul class="space-y-4 text-sm relative">
+                    
+                        <li class="pl-0 relative">
+                             <a href="#-the-asynchronous-nature-of-the-web-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">The Asynchronous Nature of the Web</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-1-the-dark-ages-callback-hell-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">1. The Dark Ages: Callback Hell</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-2-the-enlightenment-promises-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">2. The Enlightenment: Promises</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-3-the-modern-era-async-await-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">3. The Modern Era: Async / Await</a>
+                        </li>
+                    
+                        <li class="pl-8 relative">
+                             <a href="#-the-syntax-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">The Syntax</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-4-parallel-execution-with-promise-all-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">4. Parallel Execution with Promise.all</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-5-real-world-example-a-retry-utility-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">5. Real World Example: A Retry Utility</a>
+                        </li>
+                    
+                        <li class="pl-4 relative">
+                             <a href="#-conclusion-" class="toc-link block py-1 pl-4 border-l-2 border-transparent text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">Conclusion</a>
+                        </li>
+                    
+                </ul>
+            </nav>
+        </aside>
+                </div>
+                
+                 
+            <div class="max-w-screen-xl mx-auto px-6 mt-24 mb-20 relative z-10">
+                <h3 class="text-2xl font-bold text-white mb-8 border-b border-white/10 pb-4">You might also like</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    
+                        <a href="../posts/typescript-generics.html" class="block group bg-white/5 rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all">
+                             <div class="text-xs text-brand-accent font-bold mb-2">TypeScript</div>
+                             <h4 class="text-lg font-bold text-slate-200 group-hover:text-white mb-2 leading-tight">TypeScript Generics: Unleashing Type Safety at Scale</h4>
+                             <p class="text-sm text-slate-500 line-clamp-2">A masterclass on TypeScript Generics. How to write reusable, type-safe code that scales.</p>
+                        </a>
+                    
+                </div>
+            </div>
+        
+
+                <div class="mt-10 pt-10 border-t border-white/10 text-center pb-20">
+                     <a href="../" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-medium">
+                        <span>←</span> Back to Home
+                     </a>
+                </div>
+            </div>
+            
+            <script>
+                // Reading Progress
+                gsap.to("#read-progress", {
+                    width: "100%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: "article",
+                        start: "top 20%",
+                        end: "bottom bottom",
+                        scrub: true
+                    }
+                });
+            </script>
+        
+    </main>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="fixed inset-0 z-[100] hidden opacity-0 transition-opacity duration-200">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleSearch()"></div>
+
+        <!-- Modal Content -->
+        <div class="relative w-full max-w-2xl mx-auto mt-20 md:mt-32 p-4">
+            <div class="bg-[#1e293b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200"
+                id="search-panel">
+                <!-- Input -->
+                <div class="flex items-center p-4 border-b border-white/5 gap-3">
+                    <svg class="w-6 h-6 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search posts, tags, or content..."
+                        class="w-full bg-transparent text-white text-lg placeholder-slate-500 focus:outline-none"
+                        autocomplete="off">
+                    <button onclick="toggleSearch()"
+                        class="text-xs bg-white/10 px-2 py-1 rounded text-slate-400 hover:text-white uppercase font-bold">ESC</button>
+                </div>
+
+                <!-- Results -->
+                <div id="search-results" class="max-h-[60vh] overflow-y-auto p-2 space-y-2">
+                    <!-- Empty State -->
+                    <div class="text-center py-12 text-slate-500">
+                        <p>Type to search...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-white/10 mt-20 py-12 relative z-10 bg-[#0b1120]">
+        <div class="max-w-screen-xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <div
+                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-accent to-purple-400 mb-2">
+                    MD Blog</div>
+                <p class="text-sm text-slate-500">Built with Node.js, Tailwind, & GSAP.</p>
+            </div>
+            <div class="flex gap-6 text-slate-400">
+                <a href="#" class="hover:text-brand-accent transition-colors"><svg class="w-6 h-6" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                    </svg></a>
+                <a href="#" class="hover:text-brand-accent transition-colors"><svg class="w-6 h-6" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // Init GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Header Animation
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+
+        gsap.from("nav", {
+            y: -100,
+            opacity: 0,
+            duration: 1,
+            ease: "power4.out"
+        });
+
+        // Content Fade In
+        gsap.from("article", {
+            y: 20,
+            opacity: 0,
+            duration: 0.8,
+            delay: 0.2,
+            ease: "power2.out"
+        });
+
+        // TOC Sticky & Highlight (Post Page Only)
+        if (document.querySelector('.toc-link')) {
+            gsap.utils.toArray('.toc-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.target.getAttribute('href');
+                    document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // Highlight active TOC item
+            const headings = gsap.utils.toArray('h1, h2, h3');
+            const tocLinks = document.querySelectorAll('.toc-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                headings.forEach(h => {
+                    const sectionTop = h.offsetTop; // Approximate
+                    if (scrollY >= sectionTop - 150) {
+                        current = h.getAttribute('id');
+                    }
+                });
+
+                tocLinks.forEach(link => {
+                    link.classList.remove('text-white', 'font-bold', 'border-white');
+                    link.classList.add('text-slate-400', 'border-transparent');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.remove('text-slate-400', 'border-transparent');
+                        link.classList.add('text-white', 'font-bold', 'border-white/30');
+                    }
+                });
+            });
+        }
+
+        // --- SEARCH LOGIC ---
+        const searchModal = document.getElementById('search-modal');
+        const mainContent = document.getElementById('main-content');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        const searchPanel = document.getElementById('search-panel');
+        let searchIndex = [];
+        let isSearchOpen = false;
+
+        async function toggleSearch() {
+            if (!isSearchOpen) {
+                // Open
+                if (searchIndex.length === 0) {
+                    try {
+                        const res = await fetch('/search.json');
+                        searchIndex = await res.json();
+                    } catch (e) {
+                        console.error("Failed to load search index", e);
+                    }
+                }
+
+                searchModal.classList.remove('hidden');
+                // Trigger reflow
+                void searchModal.offsetWidth;
+                searchModal.classList.remove('opacity-0');
+                searchPanel.classList.remove('scale-95');
+                searchPanel.classList.add('scale-100');
+
+                mainContent.classList.add('blur-sm', 'brightness-50');
+                document.body.style.overflow = 'hidden';
+                searchInput.focus();
+                isSearchOpen = true;
+            } else {
+                // Close
+                searchModal.classList.add('opacity-0');
+                searchPanel.classList.remove('scale-100');
+                searchPanel.classList.add('scale-95');
+
+                mainContent.classList.remove('blur-sm', 'brightness-50');
+                document.body.style.overflow = '';
+
+                setTimeout(() => {
+                    searchModal.classList.add('hidden');
+                    searchInput.value = '';
+                    searchResults.innerHTML = '<div class="text-center py-12 text-slate-500"><p>Type to search...</p></div>';
+                }, 200);
+                isSearchOpen = false;
+            }
+        }
+
+        // Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                toggleSearch();
+            }
+            if (e.key === 'Escape' && isSearchOpen) {
+                toggleSearch();
+            }
+        });
+
+        // Search Input Handler
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query.length < 2) {
+                searchResults.innerHTML = '<div class="text-center py-12 text-slate-500"><p>Type to search...</p></div>';
+                return;
+            }
+
+            const results = searchIndex.filter(post => {
+                return post.title.toLowerCase().includes(query) ||
+                    post.description.toLowerCase().includes(query) ||
+                    post.tags.some(tag => tag.toLowerCase().includes(query));
+            });
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="text-center py-8 text-slate-500"><p>No results found.</p></div>';
+            } else {
+                searchResults.innerHTML = results.map(post => `
+                    <a href="/posts/${post.slug}.html" class="block p-4 rounded-xl hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center justify-between mb-1">
+                            <h4 class="text-white font-bold group-hover:text-brand-accent transition-colors">${post.title}</h4>
+                            <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-slate-400">${post.tags[0] || 'Post'}</span>
+                        </div>
+                        <p class="text-sm text-slate-500 line-clamp-1">${post.description}</p>
+                    </a>
+                `).join('');
+            }
+        });
+    </script>
+</body>
+
+</html>
